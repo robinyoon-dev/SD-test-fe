@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="index.css" />
+    <title>Document</title>
+  </head>
+  <body>
+    <section>
+      <h3>1. 그래프</h3>
+
+      <ul class="graph_list">
+        <li>
+          <span class="value"></span>
+          <span class="id"></span>
+        </li>
+      </ul>
+    </section>
+
+    <section>
+      <h3>2. 값 편집</h3>
+      <table class="dataTable">
+        <tr>
+          <th>ID</th>
+          <th>값</th>
+          <th>삭제 버튼</th>
+        </tr>
+        <!-- <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>     -->
+      </table>
+    </section>
+
+    <section>
+      <h3>3. 값 추가</h3>
+      <form class="addForm">
+        <input type="text" name="id" placeholder="ID" required />
+        <input type="number" name="value" placeholder="VALUE" required />
+        <button type="submit">Add</button>
+      </form>
+    </section>
+
+    <section>
+      <h3>4. 값 고급 편집</h3>
+      <div class="dataBox" contenteditable="false"></div>
+    </section>
+
+    <script src="main.js"></script>
+  </body>
+</html>
