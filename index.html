@@ -20,18 +20,16 @@
 
     <section>
       <h3>2. 값 편집</h3>
-      <table class="dataTable">
+      <table class="dataTable" width="500">
         <tr>
-          <th>ID</th>
-          <th>값</th>
-          <th>삭제 버튼</th>
+          <th width="20%">ID</th>
+          <th width="60%">값</th>
+          <th width="20%">삭제 버튼</th>
         </tr>
-        <!-- <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>     -->
       </table>
+      <div class="btnContainer">
+        <button class="bigBtn" type="button">Apply</button>
+      </div>
     </section>
 
     <section>
@@ -39,13 +37,16 @@
       <form class="addForm">
         <input type="text" name="id" placeholder="ID" required />
         <input type="number" name="value" placeholder="VALUE" required />
-        <button type="submit">Add</button>
+        <button class="bigBtn" type="submit">Add</button>
       </form>
     </section>
 
     <section>
       <h3>4. 값 고급 편집</h3>
       <div class="dataBox" contenteditable="false"></div>
+      <div class="btnContainer">
+        <button class="bigBtn" type="button">Apply</button>
+      </div>
     </section>
 
     <script src="main.js"></script>

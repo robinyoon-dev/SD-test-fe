@@ -36,8 +36,10 @@ function paintData(dataObj) {
   const tr = document.createElement("tr");
   const tdId = document.createElement("td");
   const tdValue = document.createElement("td");
+  const tdBtnContainer = document.createElement("td");
 
   const delButton = document.createElement("button");
+  tdBtnContainer.appendChild(delButton);
   delButton.innerText = "삭제하기";
   delButton.addEventListener("click", deleteData);
 
@@ -46,7 +48,7 @@ function paintData(dataObj) {
   tr.setAttribute("id", dataObj.id);
   tr.appendChild(tdId);
   tr.appendChild(tdValue);
-  tr.appendChild(delButton);
+  tr.appendChild(tdBtnContainer);
   dataTable.appendChild(tr);
 }
 
@@ -56,7 +58,7 @@ function paintDataOn4(text) {
 
 function deleteData(event) {
   const { target: button } = event;
-  const tr = button.parentNode;
+  const tr = button.parentNode.parentNode;
   dataTable.removeChild(tr);
   dataList = dataList.filter(
     (data) => data.id !== Number(tr.getAttribute("id"))
