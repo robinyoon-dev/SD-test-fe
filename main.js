@@ -42,7 +42,7 @@ function startEditTableData() {
   });
 }
 
-// 수정된 데이터로 저장하기.
+// 수정된 데이터로 저장하기
 function finishEditTableData() {
   // 버튼 변경
   editTableBtn_finish.hidden = true;
@@ -55,8 +55,21 @@ function finishEditTableData() {
   });
 
   //수정한 값 가져오기
+  let tempData = [];
+  let newData = Array.from(document.querySelectorAll("tr"));
+  newData.forEach((tr) => {
+    if (tr.getAttribute("id") !== null) {
+      let dataObj = {
+        id: Number(tr.getAttribute("id")),
+        value: Number(tr.getElementsByClassName("editable")[0].textContent),
+      };
+      tempData.push(dataObj);
+    }
+  });
 
-  //수정한 데이터 저장하기
+  dataList = tempData;
+
+  saveDataList();
 }
 
 function saveData(dataObj) {
@@ -71,7 +84,6 @@ function paintData(dataObj) {
   const tdBtnContainer = document.createElement("td");
 
   tdValue.classList.add("editable");
-  // tdValue.contentEditable = "false";
 
   const delButton = document.createElement("button");
   tdBtnContainer.appendChild(delButton);
