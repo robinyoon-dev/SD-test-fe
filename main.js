@@ -12,6 +12,10 @@ const addForm = document.querySelector(".addForm");
 
 // 4. 값 고급 편집 박스
 const dataBox = document.querySelector(".dataBox");
+const advancedEditBtn_start = document.getElementById("advancedEditBtn_start");
+const advancedEditBtn_finish = document.getElementById(
+  "advancedEditBtn_finish"
+);
 
 function createData(event) {
   event.preventDefault();
@@ -22,14 +26,13 @@ function createData(event) {
     value: +event.target.value.value,
   };
 
-  paintData(dataObj);
+  paintTdOn2(dataObj);
   saveData(dataObj);
   //input 값 초기화
   event.target.id.value = "";
   event.target.value.value = "";
 }
 
-// 값 부분만 수정할 수 있게 변경하기
 function startEditTableData() {
   // 버튼 변경
   editTableBtn_start.hidden = true;
@@ -42,7 +45,6 @@ function startEditTableData() {
   });
 }
 
-// 수정된 데이터로 저장하기
 function finishEditTableData() {
   // 버튼 변경
   editTableBtn_finish.hidden = true;
@@ -72,12 +74,48 @@ function finishEditTableData() {
   saveDataList();
 }
 
+function startAdvancedEditing() {
+  // 버튼 변경
+  advancedEditBtn_start.hidden = true;
+  advancedEditBtn_finish.hidden = false;
+
+  dataBox.setAttribute("contenteditable", "true");
+}
+
+function finishAdvancedEditing() {
+  // 버튼 변경
+  advancedEditBtn_finish.hidden = true;
+  advancedEditBtn_start.hidden = false;
+
+  dataBox.setAttribute("contenteditable", "false");
+
+  //수정한 값 가져오기
+  let newData = dataBox.textContent;
+
+  dataList = JSON.parse(newData);
+
+  saveDataList();
+  rePaintTable();
+}
+
+function rePaintTable(){
+  //테이블을 초기화 한다음
+  while(dataTable.hasChildNodes()&&dataTable.childNodes[2]){
+    dataTable.removeChild(dataTable.childNodes[2]);
+  }
+  //다시 반복문 돌려서 페인팅하기
+  for (let dataObj of dataList ) {
+    paintTdOn2(dataObj);
+  }
+}
+
+
 function saveData(dataObj) {
   dataList.push(dataObj);
   saveDataList();
 }
 
-function paintData(dataObj) {
+function paintTdOn2(dataObj) {
   const tr = document.createElement("tr");
   const tdId = document.createElement("td");
   const tdValue = document.createElement("td");
@@ -126,17 +164,21 @@ function loadDataList() {
   if (loadedDataList !== null) {
     const parsedDataList = JSON.parse(loadedDataList);
     for (let dataObj of parsedDataList) {
-      paintData(dataObj);
+      paintTdOn2(dataObj);
       saveData(dataObj);
     }
   }
 }
 
 function init() {
+  // let text = JSON.stringify(dataList);
+  // localStorage.setItem(DATALIST, text);
   loadDataList();
   addForm.addEventListener("submit", createData);
   editTableBtn_start.addEventListener("click", startEditTableData);
   editTableBtn_finish.addEventListener("click", finishEditTableData);
+  advancedEditBtn_start.addEventListener("click", startAdvancedEditing);
+  advancedEditBtn_finish.addEventListener("click", finishAdvancedEditing);
 }
 
 init();
