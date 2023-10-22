@@ -183,7 +183,7 @@ function paintTdOn2(dataObj) {
 
   const delButton = document.createElement("button");
   tdBtnContainer.appendChild(delButton);
-  delButton.innerText = "삭제하기";
+  delButton.innerText = "삭제";
   delButton.addEventListener("click", deleteData);
 
   tdId.innerHTML = dataObj.id;

@@ -1,19 +1,27 @@
-/* 초기화 */
+/* 공통 */
 * {
   margin: 0;
 }
 
 body {
-  height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
+  gap: 3rem;
+
+}
+
+h1 {
+  font-size: 1.5rem;
+  margin: 1rem 1rem;
 }
 
 section {
-  max-width: 700px;
-  /* align-items: start; */
+  width: 500px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
 }
 
 h3{
@@ -24,7 +32,7 @@ h3{
 .graphBox {
   display: flex;
   flex-direction: row;
-  height: 500px;
+  height: 400px;
 }
 .y_axis {
   display: flex;
@@ -33,7 +41,6 @@ h3{
   height: 100%;
   text-align: end;
 }
-
 
 ul {
   list-style: none;
@@ -58,7 +65,6 @@ li {
 }
 
 /* 2. 값 편집 */
-/* 테이블 */
 table,
 th,
 td {
@@ -74,16 +80,36 @@ tr button {
   cursor: pointer;
 }
 
-/* Apply 버튼 */
+/* 2. 값 편집 & 4. 값 고급 편집의 Apply 버튼 Container*/
 .btnContainer {
   margin-top: 0.3rem;
   display: flex;
+  flex-direction: row;
   justify-content: end;
 }
 
-/* 4. */
+/* 3. 값 추가 */
+.addForm{
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+/* id input */
+.addForm input:nth-child(1) {
+  width: 20%;
+}
+
+/* value input */
+.addForm input:nth-child(2) {
+  width: 60%;
+}
+
+
+/* 4. 값 고급 편집*/
 .dataBox {
   width: 500px;
-  height: 500px;
+  height: 400px;
   border: 1px solid black;
 }
