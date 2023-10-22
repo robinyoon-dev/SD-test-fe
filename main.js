@@ -190,7 +190,6 @@ function deleteData(event) {
   rePaintGraph();
 }
 
-
 //3. 값 추가 - 값 추가하기
 function createData(event) {
   event.preventDefault();
@@ -200,15 +199,32 @@ function createData(event) {
     value: +event.target.value.value,
   };
 
-  paintEachGraphOn1(dataObj);
-  paintTdOn2(dataObj);
-  saveData(dataObj);
+  //ID 중복 검사
+  if (checkId(+event.target.id.value)) {
+    paintEachGraphOn1(dataObj);
+    paintTdOn2(dataObj);
+    saveData(dataObj);
+  } else {
+    alert("중복된 아이디입니다.");
+  }
 
   //input 값 초기화
   event.target.id.value = "";
   event.target.value.value = "";
 }
 
+//3. 값 추가 - ID 중복 검사하기
+function checkId(inputedId) {
+  //dataList는 array
+  for (let data of dataList) {
+    console.log(data.id);
+    if (inputedId === data.id) {
+      //아이디가 중복인 경우
+      return false;
+    }
+  }
+  return true;
+}
 
 //4. 값 고급 편집 - 수정 시작
 function startAdvancedEditing() {
@@ -241,7 +257,6 @@ function finishAdvancedEditing() {
 function paintDataOn4(text) {
   dataBox.textContent = `${text}`;
 }
-
 
 // 저장할 때 사용
 function saveData(dataObj) {
