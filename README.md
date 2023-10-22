@@ -1,2 +1,2 @@
-# SD-test-fe (진행중)
+# SD-test-fe
 과제 제출용 repository입니다.
