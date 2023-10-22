@@ -6,8 +6,6 @@ let dataList = [];
 const graphList = document.querySelector(".graph_list");
 const yAxis = document.querySelector(".y_axis");
 const graphBox = document.querySelector(".graphBox");
-let rect = graphBox.offsetHeight;
-console.log(rect);
 
 //2. 값 편집의 테이블
 const dataTable = document.querySelector(".dataTable");
@@ -117,6 +115,18 @@ function rePaintTable() {
   }
 }
 
+function rePaintGraph() {
+  //그래프를 모두 없앤 다음
+  while (graphList.hasChildNodes()) {
+    graphList.removeChild(graphList.firstChild);
+  }
+
+  //다시 반복문 돌려서 페인팅하기
+  for (let dataObj of dataList) {
+    paintEachGraphOn1(dataObj);
+  }
+}
+
 function saveData(dataObj) {
   dataList.push(dataObj);
   saveDataList();
@@ -137,24 +147,20 @@ function getYAxis() {
 
 function paintEachGraphOn1(dataObj) {
   const li = document.createElement("li");
-  const spanValue = document.createElement("span");
   const spanId = document.createElement("span");
 
-  spanValue.classList.add("value");
   spanId.classList.add("id");
-
-  spanValue.innerHTML = dataObj.value;
   spanId.innerHTML = dataObj.id;
 
   li.setAttribute("id", dataObj.id);
 
   //막대 그래프 그리기
- 
+
   const barContainer = document.createElement("div");
   const bar = document.createElement("div");
-  barContainer.className = "barContainer"
+  barContainer.className = "barContainer";
   bar.className = "bar";
-  barContainer.style.height = '100%';
+  barContainer.style.height = "100%";
   bar.style.height = `${dataObj.value}%`;
   bar.style.width = "20px";
   bar.style.backgroundColor = "black";
@@ -201,6 +207,7 @@ function deleteData(event) {
   );
 
   saveDataList();
+  rePaintGraph();
 }
 
 function saveDataList() {
