@@ -2,6 +2,13 @@ const DATALIST = "dataList";
 
 let dataList = [];
 
+// 1. 그래프
+const graphList = document.querySelector(".graph_list");
+const yAxis = document.querySelector(".y_axis");
+const graphBox = document.querySelector(".graphBox");
+let rect = graphBox.offsetHeight;
+console.log(rect);
+
 //2. 값 편집의 테이블
 const dataTable = document.querySelector(".dataTable");
 const editTableBtn_start = document.getElementById("editBtn_start");
@@ -26,6 +33,7 @@ function createData(event) {
     value: +event.target.value.value,
   };
 
+  paintEachGraphOn1(dataObj);
   paintTdOn2(dataObj);
   saveData(dataObj);
   //input 값 초기화
@@ -98,21 +106,64 @@ function finishAdvancedEditing() {
   rePaintTable();
 }
 
-function rePaintTable(){
+function rePaintTable() {
   //테이블을 초기화 한다음
-  while(dataTable.hasChildNodes()&&dataTable.childNodes[2]){
+  while (dataTable.hasChildNodes() && dataTable.childNodes[2]) {
     dataTable.removeChild(dataTable.childNodes[2]);
   }
   //다시 반복문 돌려서 페인팅하기
-  for (let dataObj of dataList ) {
+  for (let dataObj of dataList) {
     paintTdOn2(dataObj);
   }
 }
 
-
 function saveData(dataObj) {
   dataList.push(dataObj);
   saveDataList();
+}
+
+function getYAxis() {
+  const yArr = new Array();
+  //5단위로 값 구하기
+  for (let i = 100; i >= 0; i--) {
+    if (i % 10 === 0) yArr.push(i);
+  }
+
+  yArr.forEach((num) =>
+    yAxis.insertAdjacentHTML("beforeend", `<span><p>${num}</p></span>`)
+  );
+  yAxis.insertAdjacentHTML("beforeend", `<span><p> </p></span>`);
+}
+
+function paintEachGraphOn1(dataObj) {
+  const li = document.createElement("li");
+  const spanValue = document.createElement("span");
+  const spanId = document.createElement("span");
+
+  spanValue.classList.add("value");
+  spanId.classList.add("id");
+
+  spanValue.innerHTML = dataObj.value;
+  spanId.innerHTML = dataObj.id;
+
+  li.setAttribute("id", dataObj.id);
+
+  //막대 그래프 그리기
+ 
+  const barContainer = document.createElement("div");
+  const bar = document.createElement("div");
+  barContainer.className = "barContainer"
+  bar.className = "bar";
+  barContainer.style.height = '100%';
+  bar.style.height = `${dataObj.value}%`;
+  bar.style.width = "20px";
+  bar.style.backgroundColor = "black";
+
+  // li.appendChild(spanValue);
+  li.appendChild(barContainer);
+  barContainer.appendChild(bar);
+  li.appendChild(spanId);
+  graphList.appendChild(li);
 }
 
 function paintTdOn2(dataObj) {
@@ -164,6 +215,7 @@ function loadDataList() {
   if (loadedDataList !== null) {
     const parsedDataList = JSON.parse(loadedDataList);
     for (let dataObj of parsedDataList) {
+      paintEachGraphOn1(dataObj);
       paintTdOn2(dataObj);
       saveData(dataObj);
     }
@@ -174,6 +226,7 @@ function init() {
   // let text = JSON.stringify(dataList);
   // localStorage.setItem(DATALIST, text);
   loadDataList();
+  getYAxis();
   addForm.addEventListener("submit", createData);
   editTableBtn_start.addEventListener("click", startEditTableData);
   editTableBtn_finish.addEventListener("click", finishEditTableData);

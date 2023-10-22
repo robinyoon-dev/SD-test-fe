@@ -1,51 +1,89 @@
 /* 초기화 */
 * {
-    margin: 0;
+  margin: 0;
 }
-
-
 
 body {
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    align-items: center;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
+
+section {
+  max-width: 700px;
+  /* align-items: start; */
+}
+
+h3{
+    margin-bottom: 1rem;
+}
+
+/* 1. 그래프 */
+.graphBox {
+  display: flex;
+  flex-direction: row;
+  height: 500px;
+}
+.y_axis {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  text-align: end;
 }
 
 
-section{
-    max-width: 700px;
-    /* align-items: start; */
+ul {
+  list-style: none;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 1rem;
+}
+li {
+  text-align: center;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  align-items: center;
+  gap: 0.5rem;
+}
+.barContainer{
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
 }
 
+/* 2. 값 편집 */
 /* 테이블 */
-table, th, td {
-    border-collapse: collapse;
-    border: 1px solid;
-    text-align: center;
+table,
+th,
+td {
+  border-collapse: collapse;
+  border: 1px solid;
+  text-align: center;
 }
 tr button {
-    background: none;
-    border: none;
-    color: red;
-    text-decoration: underline;
-    cursor: pointer;
+  background: none;
+  border: none;
+  color: red;
+  text-decoration: underline;
+  cursor: pointer;
 }
-
 
 /* Apply 버튼 */
 .btnContainer {
-    margin-top: 0.3rem;
-    display: flex;
-    justify-content: end;
+  margin-top: 0.3rem;
+  display: flex;
+  justify-content: end;
 }
 
-
-
 /* 4. */
-.dataBox{
-    width: 500px;
-    height: 500px;
-    border: 1px solid black;
+.dataBox {
+  width: 500px;
+  height: 500px;
+  border: 1px solid black;
 }
