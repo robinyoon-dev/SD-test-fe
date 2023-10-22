@@ -102,6 +102,7 @@ function finishAdvancedEditing() {
 
   saveDataList();
   rePaintTable();
+  rePaintGraph();
 }
 
 function rePaintTable() {
