@@ -7,38 +7,134 @@ const graphList = document.querySelector(".graph_list");
 const yAxis = document.querySelector(".y_axis");
 const graphBox = document.querySelector(".graphBox");
 
-//2. 값 편집의 테이블
+//2. 값 편집
 const dataTable = document.querySelector(".dataTable");
 const editTableBtn_start = document.getElementById("editBtn_start");
 const editTableBtn_finish = document.getElementById("editBtn_finish");
 
-//3. 값 추가 폼
+//3. 값 추가
 const addForm = document.querySelector(".addForm");
 
-// 4. 값 고급 편집 박스
+// 4. 값 고급
 const dataBox = document.querySelector(".dataBox");
 const advancedEditBtn_start = document.getElementById("advancedEditBtn_start");
 const advancedEditBtn_finish = document.getElementById(
   "advancedEditBtn_finish"
 );
 
-function createData(event) {
-  event.preventDefault();
-
-  let dataObj = {
-    //id: number, value: number
-    id: +event.target.id.value,
-    value: +event.target.value.value,
-  };
-
-  paintEachGraphOn1(dataObj);
-  paintTdOn2(dataObj);
-  saveData(dataObj);
-  //input 값 초기화
-  event.target.id.value = "";
-  event.target.value.value = "";
+function init() {
+  loadDataList();
+  getYAxis();
+  addForm.addEventListener("submit", createData);
+  editTableBtn_start.addEventListener("click", startEditTableData);
+  editTableBtn_finish.addEventListener("click", finishEditTableData);
+  advancedEditBtn_start.addEventListener("click", startAdvancedEditing);
+  advancedEditBtn_finish.addEventListener("click", finishAdvancedEditing);
 }
 
+function loadDataList() {
+  const loadedDataList = localStorage.getItem(DATALIST);
+
+  if (loadedDataList !== null) {
+    const parsedDataList = JSON.parse(loadedDataList);
+    for (let dataObj of parsedDataList) {
+      paintEachGraphOn1(dataObj);
+      paintTdOn2(dataObj);
+      saveData(dataObj);
+    }
+  }
+}
+
+//1. 그래프 - y축 생성
+function getYAxis() {
+  const yArr = new Array();
+
+  //10 단위로 값 구하기
+  for (let i = 100; i >= 0; i--) {
+    if (i % 10 === 0) yArr.push(i);
+  }
+
+  yArr.forEach((num) =>
+    yAxis.insertAdjacentHTML("beforeend", `<span><p>${num}</p></span>`)
+  );
+  yAxis.insertAdjacentHTML("beforeend", `<span><p> </p></span>`);
+}
+
+//1. 그래프 - 그래프 생성
+function paintEachGraphOn1(dataObj) {
+  const li = document.createElement("li");
+  const spanId = document.createElement("span");
+
+  spanId.classList.add("id");
+  spanId.innerHTML = dataObj.id;
+
+  li.setAttribute("id", dataObj.id);
+
+  //막대 그래프 그리기
+  const barContainer = document.createElement("div");
+  const bar = document.createElement("div");
+  barContainer.className = "barContainer";
+  bar.className = "bar";
+  barContainer.style.height = "100%";
+  bar.style.height = `${dataObj.value}%`;
+  bar.style.width = "20px";
+  bar.style.backgroundColor = "black";
+
+  li.appendChild(barContainer);
+  barContainer.appendChild(bar);
+  li.appendChild(spanId);
+  graphList.appendChild(li);
+}
+
+//1. 그래프 - 그래프 리페인팅
+function rePaintGraph() {
+  //그래프를 모두 없앤 다음에
+  while (graphList.hasChildNodes()) {
+    graphList.removeChild(graphList.firstChild);
+  }
+
+  //다시 그래프를 페인팅하기
+  for (let dataObj of dataList) {
+    paintEachGraphOn1(dataObj);
+  }
+}
+
+//2. 값 편집 - 표 생성
+function paintTdOn2(dataObj) {
+  const tr = document.createElement("tr");
+  const tdId = document.createElement("td");
+  const tdValue = document.createElement("td");
+  const tdBtnContainer = document.createElement("td");
+
+  tdValue.classList.add("editable");
+
+  const delButton = document.createElement("button");
+  tdBtnContainer.appendChild(delButton);
+  delButton.innerText = "삭제";
+  delButton.addEventListener("click", deleteData);
+
+  tdId.innerHTML = dataObj.id;
+  tdValue.innerHTML = dataObj.value;
+  tr.setAttribute("id", dataObj.id);
+  tr.appendChild(tdId);
+  tr.appendChild(tdValue);
+  tr.appendChild(tdBtnContainer);
+  dataTable.appendChild(tr);
+}
+
+//2. 값 편집 - 표 리페인팅
+function rePaintTable() {
+  //테이블 비운 다음에
+  while (dataTable.hasChildNodes() && dataTable.childNodes[2]) {
+    dataTable.removeChild(dataTable.childNodes[2]);
+  }
+  //다시 반복문 돌려서 페인팅하기
+  for (let dataObj of dataList) {
+    paintTdOn2(dataObj);
+  }
+}
+
+//2. 값 편집 - 수정 시작
 function startEditTableData() {
   // 버튼 변경
   editTableBtn_start.hidden = true;
@@ -51,6 +147,7 @@ function startEditTableData() {
   });
 }
 
+//2. 값 편집 - 수정 끝
 function finishEditTableData() {
   // 버튼 변경
   editTableBtn_finish.hidden = true;
@@ -75,11 +172,45 @@ function finishEditTableData() {
     }
   });
 
+  //수정한 값을 dataList에 넣기
   dataList = tempData;
 
   saveDataList();
 }
 
+//2. 값 편집 - 삭제하기
+function deleteData(event) {
+  const { target: button } = event;
+  const tr = button.parentNode.parentNode;
+  dataTable.removeChild(tr);
+  dataList = dataList.filter(
+    (data) => data.id !== Number(tr.getAttribute("id"))
+  );
+  saveDataList();
+  rePaintGraph();
+}
+
+
+//3. 값 추가 - 값 추가하기
+function createData(event) {
+  event.preventDefault();
+  let dataObj = {
+    //id: number, value: number
+    id: +event.target.id.value,
+    value: +event.target.value.value,
+  };
+
+  paintEachGraphOn1(dataObj);
+  paintTdOn2(dataObj);
+  saveData(dataObj);
+
+  //input 값 초기화
+  event.target.id.value = "";
+  event.target.value.value = "";
+}
+
+
+//4. 값 고급 편집 - 수정 시작
 function startAdvancedEditing() {
   // 버튼 변경
   advancedEditBtn_start.hidden = true;
@@ -88,6 +219,7 @@ function startAdvancedEditing() {
   dataBox.setAttribute("contenteditable", "true");
 }
 
+//4. 값 고급 편집 - 수정 끝
 function finishAdvancedEditing() {
   // 버튼 변경
   advancedEditBtn_finish.hidden = true;
@@ -105,141 +237,22 @@ function finishAdvancedEditing() {
   rePaintGraph();
 }
 
-function rePaintTable() {
-  //테이블을 초기화 한다음
-  while (dataTable.hasChildNodes() && dataTable.childNodes[2]) {
-    dataTable.removeChild(dataTable.childNodes[2]);
-  }
-  //다시 반복문 돌려서 페인팅하기
-  for (let dataObj of dataList) {
-    paintTdOn2(dataObj);
-  }
+//4. 값 고급 편집 - 페인팅 & 리페인팅 시 사용.
+function paintDataOn4(text) {
+  dataBox.textContent = `${text}`;
 }
 
-function rePaintGraph() {
-  //그래프를 모두 없앤 다음
-  while (graphList.hasChildNodes()) {
-    graphList.removeChild(graphList.firstChild);
-  }
 
-  //다시 반복문 돌려서 페인팅하기
-  for (let dataObj of dataList) {
-    paintEachGraphOn1(dataObj);
-  }
-}
-
+// 저장할 때 사용
 function saveData(dataObj) {
   dataList.push(dataObj);
   saveDataList();
 }
 
-function getYAxis() {
-  const yArr = new Array();
-  //5단위로 값 구하기
-  for (let i = 100; i >= 0; i--) {
-    if (i % 10 === 0) yArr.push(i);
-  }
-
-  yArr.forEach((num) =>
-    yAxis.insertAdjacentHTML("beforeend", `<span><p>${num}</p></span>`)
-  );
-  yAxis.insertAdjacentHTML("beforeend", `<span><p> </p></span>`);
-}
-
-function paintEachGraphOn1(dataObj) {
-  const li = document.createElement("li");
-  const spanId = document.createElement("span");
-
-  spanId.classList.add("id");
-  spanId.innerHTML = dataObj.id;
-
-  li.setAttribute("id", dataObj.id);
-
-  //막대 그래프 그리기
-
-  const barContainer = document.createElement("div");
-  const bar = document.createElement("div");
-  barContainer.className = "barContainer";
-  bar.className = "bar";
-  barContainer.style.height = "100%";
-  bar.style.height = `${dataObj.value}%`;
-  bar.style.width = "20px";
-  bar.style.backgroundColor = "black";
-
-  // li.appendChild(spanValue);
-  li.appendChild(barContainer);
-  barContainer.appendChild(bar);
-  li.appendChild(spanId);
-  graphList.appendChild(li);
-}
-
-function paintTdOn2(dataObj) {
-  const tr = document.createElement("tr");
-  const tdId = document.createElement("td");
-  const tdValue = document.createElement("td");
-  const tdBtnContainer = document.createElement("td");
-
-  tdValue.classList.add("editable");
-
-  const delButton = document.createElement("button");
-  tdBtnContainer.appendChild(delButton);
-  delButton.innerText = "삭제";
-  delButton.addEventListener("click", deleteData);
-
-  tdId.innerHTML = dataObj.id;
-  tdValue.innerHTML = dataObj.value;
-  tr.setAttribute("id", dataObj.id);
-  tr.appendChild(tdId);
-  tr.appendChild(tdValue);
-  tr.appendChild(tdBtnContainer);
-  dataTable.appendChild(tr);
-}
-
-function paintDataOn4(text) {
-  dataBox.textContent = `${text}`;
-}
-
-function deleteData(event) {
-  const { target: button } = event;
-  const tr = button.parentNode.parentNode;
-  dataTable.removeChild(tr);
-  dataList = dataList.filter(
-    (data) => data.id !== Number(tr.getAttribute("id"))
-  );
-
-  saveDataList();
-  rePaintGraph();
-}
-
 function saveDataList() {
   let text = JSON.stringify(dataList);
-
   localStorage.setItem(DATALIST, text);
   paintDataOn4(text);
-}
-
-function loadDataList() {
-  const loadedDataList = localStorage.getItem(DATALIST);
-  if (loadedDataList !== null) {
-    const parsedDataList = JSON.parse(loadedDataList);
-    for (let dataObj of parsedDataList) {
-      paintEachGraphOn1(dataObj);
-      paintTdOn2(dataObj);
-      saveData(dataObj);
-    }
-  }
-}
-
-function init() {
-  // let text = JSON.stringify(dataList);
-  // localStorage.setItem(DATALIST, text);
-  loadDataList();
-  getYAxis();
-  addForm.addEventListener("submit", createData);
-  editTableBtn_start.addEventListener("click", startEditTableData);
-  editTableBtn_finish.addEventListener("click", finishEditTableData);
-  advancedEditBtn_start.addEventListener("click", startAdvancedEditing);
-  advancedEditBtn_finish.addEventListener("click", finishAdvancedEditing);
 }
 
 init();
