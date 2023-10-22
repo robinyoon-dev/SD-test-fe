@@ -215,7 +215,6 @@ function createData(event) {
 
 //3. 값 추가 - ID 중복 검사하기
 function checkId(inputedId) {
-  //dataList는 array
   for (let data of dataList) {
     console.log(data.id);
     if (inputedId === data.id) {
@@ -237,16 +236,32 @@ function startAdvancedEditing() {
 
 //4. 값 고급 편집 - 수정 끝
 function finishAdvancedEditing() {
+  //수정한 값 가져오기
+  let newData = dataBox.textContent;
+
+  let tempData;
+
+  //JSON 형식에 맞게 되었는지 체크
+  try {
+    tempData = JSON.parse(newData);
+  } catch (err) {
+    alert("JSON 형식에 맞게 써주세요. " + err);
+    return;
+  }
+
+  //ID 중복 체크
+  if (!checkAdvancedID(tempData)) {
+    alert("ID가 중복되었습니다.");
+    return;
+  }
+
+  dataList = JSON.parse(newData);
+
   // 버튼 변경
   advancedEditBtn_finish.hidden = true;
   advancedEditBtn_start.hidden = false;
 
   dataBox.setAttribute("contenteditable", "false");
-
-  //수정한 값 가져오기
-  let newData = dataBox.textContent;
-
-  dataList = JSON.parse(newData);
 
   saveDataList();
   rePaintTable();
@@ -256,6 +271,22 @@ function finishAdvancedEditing() {
 //4. 값 고급 편집 - 페인팅 & 리페인팅 시 사용.
 function paintDataOn4(text) {
   dataBox.textContent = `${text}`;
+}
+
+//4. 값 고급 편집 - ID 중복 검사
+function checkAdvancedID(tempData) {
+  let idObject = {};
+  for (let data of tempData) {
+    idObject[data.id] = (idObject[data.id] || 0) + 1;
+  }
+
+  for (let key in idObject) {
+    if (idObject[key] > 1) {
+      //아이디 중복
+      return false;
+    }
+  }
+  return true;
 }
 
 // 저장할 때 사용
